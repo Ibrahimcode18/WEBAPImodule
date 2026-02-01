@@ -7,12 +7,12 @@ const router = new Router();
 app.use(cors()); // Enable CORS for everyone
 app.use(bodyParser());
 let articles = [
-{ title: 'Hello World', fullText: 'This is my first article from Koa!' },
-{ title: 'Vue is cool', fullText: 'We will learn Vue next week.' },
-{ title: 'CORS Fixed', fullText: 'Now the browser allows the connection.' }
+    { title: 'Hello World', fullText: 'This is my first article from Koa!' },
+    { title: 'Vue is cool', fullText: 'We will learn Vue next week.' },
+    { title: 'CORS Fixed', fullText: 'Now the browser allows the connection.' }
 ];
 router.get('/api/v1/articles', (ctx) => {
-ctx.body = articles;
+    ctx.body = articles;
 });
 app.use(router.routes());
 app.listen(3000);
