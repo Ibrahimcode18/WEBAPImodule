@@ -4,18 +4,29 @@ const bodyParser = require('koa-bodyparser');
 // Prefix means all routes here start with /api/v1/articles
 const router = new Router({ prefix: '/api/v1/articles' });
 let articles = [
-    { title: 'Hello World', fullText: 'This is my first article from Koa!' },
-    { title: 'Vue is cool', fullText: 'We will learn Vue next week.' },
-    { title: 'Refactored', fullText: 'We moved this to a separate file.' }
+    { id: 1,title: 'Hello World', fullText: 'This is my first article from Koa!' },
+    { id: 2, title: 'Vue is cool', fullText: 'We will learn Vue next week.' },
+    { id: 3, title: 'Refactored', fullText: 'We moved this to a separate file.' }
 ];
 
 // Routes
 router.get('/', getAll);
+router.get('/:id', getById)
 router.post('/', bodyParser(), createArticle); // We will build this next
 
 // Handlers
 function getAll(ctx) {
-    ctx.body = articles;
+    const urlquery = ctx.request.query.q;
+    if (urlquery) {
+        const filtered = articles.filter(article => article.title.toLowerCase().includes(urlquery.toLowerCase()));
+        if (filtered.length > 0){
+            ctx.body = filtered;
+        } else {
+            ctx.body = {message: "Title and fullText are required"};
+        }
+    } else{
+        ctx.body = articles;
+    }
 }
 
 function createArticle(ctx) {
@@ -26,10 +37,22 @@ function createArticle(ctx) {
     ctx.body = { message: "Title and fullText are required" };
     return;
     }
-    const newArticle = { title, fullText };
+    let id = articles.length + 1;
+    const newArticle = { id, title, fullText };
     articles.push(newArticle);
     ctx.status = 201; // Created
-ctx.body = { message: "Created", article: newArticle };
+    ctx.body = { message: "Created", article: newArticle };
+}
+
+function getById(ctx){
+    const id = parseInt(ctx.params.id);
+    const article = articles.find(a => a.id === id);
+    if(article) {
+        ctx.body = article;
+    } else {
+        ctx.status = 404;
+        ctx.body = { message: "Article not found" };
+    }
 }
 
 module.exports = router;
