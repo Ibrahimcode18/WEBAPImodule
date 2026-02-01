@@ -1,4 +1,4 @@
-const apiUrl = 'https://jsonplaceholder.typicode.com/posts';
+const apiUrl = 'http://localhost:3000/api/v1/articles';
 // Function to fetch posts
 async function fetchPosts() {
     console.log("Fetching posts...");
