@@ -1,7 +1,8 @@
 <script setup>
-  import { ref, onMounted } from 'vue'   
+  import { ref, onMounted, computed } from 'vue'   
   const articles = ref([])     // 2. Create a reactive box to hold the list
   const loading = ref(true)
+  const searchQuery = ref('')
 
   onMounted(async () => {     // 3. Fetch data ONLY when the component mounts
     try {
@@ -14,10 +15,36 @@
       loading.value = false
     }
   })
+
+  async function removeArticle(id){
+    try{
+      const response = await fetch(`http://localhost:3000/api/v1/articles/${id}`, {
+        method : 'DELETE',
+      })
+      if (response.ok){
+        console.log(`Article with id ${id} deleted successfully.`)
+        articles.value = articles.value.filter(article => article.id !== id)
+      } else {
+        console.error(`Failed to delete article with id ${id}. Status: ${response.status}`)
+      }
+    } catch (error){
+      console.error("Network issues", error)
+    }
+  }
+
+const filteredArticles = computed(() => {
+  return articles.value.filter(article =>
+    article.title.toLowerCase().includes(searchQuery.value.toLowerCase())
+ )
+})
+
 </script>
 
 <template>
   <h1>Latest Articles</h1>
+  <div>
+    <input v-model="searchQuery" placeholder="Search..." />
+  </div>
   <div v-if="loading">
     Loading articles... please wait.
   </div>
@@ -25,9 +52,10 @@
     <h1>No articles found. Go write some!</h1>
   </div>
   <div v-else>
-    <div v-for="article in articles" :key="article.id" class="article-card">
+    <div v-for="article in filteredArticles" :key="article.id" class="article-card">
       <h2>{{ article.title }}</h2>
       <p>{{ article.fullText }}</p>
+      <button @click="removeArticle(article.id)">Delete</button>
     </div>
  </div>
 </template>
