@@ -1,35 +1,43 @@
 <script setup>
-import { ref, onMounted } from 'vue'
-// 2. Create a reactive box to hold the list
-const articles = ref([])
-// 3. Fetch data ONLY
-// when the component mounts
-onMounted(async () => {
- try {
- const response = await fetch('http://localhost:3000/api/v1/articles')
- const data = await response.json()
- articles.value = data // Update the reactive
-// variable
- } catch (error) {
- console.error('Error fetching articles:', error)
- }
-})
+  import { ref, onMounted } from 'vue'   
+  const articles = ref([])     // 2. Create a reactive box to hold the list
+  const loading = ref(true)
+
+  onMounted(async () => {     // 3. Fetch data ONLY when the component mounts
+    try {
+      const response = await fetch('http://localhost:3000/api/v1/articles')
+      const data = await response.json()
+      articles.value = data // Update the reactive variable
+    } catch (error) {
+      console.error('Error fetching articles:', error)
+    } finally{
+      loading.value = false
+    }
+  })
 </script>
 
-<<template>
- <h1>Latest Articles</h1>
-
- <div v-for="article in articles" :key="article.id" class="article-card">
- <h2>{{ article.title }}</h2>
- <p>{{ article.fullText }}</p>
+<template>
+  <h1>Latest Articles</h1>
+  <div v-if="loading">
+    Loading articles... please wait.
+  </div>
+  <div v-else-if="articles.length === 0">
+    <h1>No articles found. Go write some!</h1>
+  </div>
+  <div v-else>
+    <div v-for="article in articles" :key="article.id" class="article-card">
+      <h2>{{ article.title }}</h2>
+      <p>{{ article.fullText }}</p>
+    </div>
  </div>
 </template>
+
 <style scoped>
-.article-card {
- border: 1px solid #ccc;
- padding: 10px;
- margin: 10px 0;
- border-radius: 8px;
- background-color: #f9f9f9;
-}
+  .article-card {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  }
 </style>
