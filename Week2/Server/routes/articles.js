@@ -13,6 +13,19 @@ let articles = [
 router.get('/', getAll);
 router.get('/:id', getById)
 router.post('/', bodyParser(), createArticle); // We will build this next
+router.delete('/:id', (ctx) => {
+    const id = parseInt(ctx.params.id);
+    const index = articles.findIndex(a => a.id === id);
+    if (index !== -1) {
+        articles.splice(index, 1);
+        ctx.status = 204; // No Content
+        console.log(`Deleted article with id ${id}`);
+    } else {
+        ctx.status = 404;
+        ctx.body = { message: "Article not found" };
+        console.log(`Article with id ${id} not found for deletion`);
+    }
+});
 
 // Handlers
 function getAll(ctx) {
