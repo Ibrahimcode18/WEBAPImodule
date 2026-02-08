@@ -1,5 +1,6 @@
 <script setup>
-  import { ref, onMounted, computed } from 'vue'   
+  import { ref, onMounted, computed, watch } from 'vue'
+  import ArticleCard from './components/ArticleCard.vue'   
   const articles = ref([])     // 2. Create a reactive box to hold the list
   const loading = ref(true)
   const searchQuery = ref('')
@@ -32,18 +33,21 @@
     }
   }
 
-const filteredArticles = computed(() => {
-  return articles.value.filter(article =>
-    article.title.toLowerCase().includes(searchQuery.value.toLowerCase())
- )
-})
+  
+  watch(searchQuery, async (newValue, oldValue) => {
+    console.log('User is typing...', newValue)
+    const response = await fetch(`http://localhost:3000/api/v1/articles?q=${newValue}`)
+    const data = await response.json()
+    articles.value = data
+  })
+
 
 </script>
 
 <template>
   <h1>Latest Articles</h1>
   <div>
-    <input v-model="searchQuery" placeholder="Search..." />
+    <input v-model="searchQuery" placeholder="Search articles (Server side demo)..." />
   </div>
   <div v-if="loading">
     Loading articles... please wait.
@@ -52,11 +56,12 @@ const filteredArticles = computed(() => {
     <h1>No articles found. Go write some!</h1>
   </div>
   <div v-else>
-    <div v-for="article in filteredArticles" :key="article.id" class="article-card">
-      <h2>{{ article.title }}</h2>
-      <p>{{ article.fullText }}</p>
-      <button @click="removeArticle(article.id)">Delete</button>
-    </div>
+    <ArticleCard 
+      v-for="article in articles" 
+      :key="article.id" 
+      :data="article" 
+      @delete-article="removeArticle" 
+    />
  </div>
 </template>
 
