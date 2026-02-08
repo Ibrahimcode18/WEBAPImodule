@@ -4,6 +4,8 @@
   const articles = ref([])     // 2. Create a reactive box to hold the list
   const loading = ref(true)
   const searchQuery = ref('')
+  const totalLikes = ref(0)
+  
 
   onMounted(async () => {     // 3. Fetch data ONLY when the component mounts
     try {
@@ -41,11 +43,16 @@
     articles.value = data
   })
 
+  function updateLikes(){
+    totalLikes.value++;
+  }
+
 
 </script>
 
 <template>
   <h1>Latest Articles</h1>
+  <p>Total Likes: {{ totalLikes }}</p>
   <div>
     <input v-model="searchQuery" placeholder="Search articles (Server side demo)..." />
   </div>
@@ -60,7 +67,8 @@
       v-for="article in articles" 
       :key="article.id" 
       :data="article" 
-      @delete-article="removeArticle" 
+      @delete-article="removeArticle"
+      @updateLikes="updateLikes" 
     />
  </div>
 </template>
