@@ -4,6 +4,8 @@
     const likes = ref(0)
     defineProps(['data'])
     const emit = defineEmits(['delete-article', 'updateLikes'])
+    /// The functions below are now replaced by inline event handlers in the template, but you can still define them here if you prefer that style.
+    // The buttons onclick will be onclick="deleteClicked" and onclick="likeClicked" respectively, and the functions will emit events to the parent component (App.vue) with the necessary data (like article ID for deletion).
     // function deleteClicked() {
     //     // Shout "delete-article" to the parent, and pass the ID
     //     emit('delete-article', data.id)
