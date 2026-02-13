@@ -1,13 +1,14 @@
 const Router = require('koa-router');
 const bodyParser = require('koa-bodyparser');
-
+const db = require('../helpers/database'); 
 // Prefix means all routes here start with /api/v1/articles
 const router = new Router({ prefix: '/api/v1/articles' });
-let articles = [
-    { id: 1,title: 'Hello World', fullText: 'This is my first article from Koa!' },
-    { id: 2, title: 'Vue is cool', fullText: 'We will learn Vue next week.' },
-    { id: 3, title: 'Refactored', fullText: 'We moved this to a separate file.' }
-];
+// let articles = [
+//     { id: 1,title: 'Hello World', fullText: 'This is my first article from Koa!' },
+//     { id: 2, title: 'Vue is cool', fullText: 'We will learn Vue next week.' },
+//     { id: 3, title: 'Refactored', fullText: 'We moved this to a separate file.' }
+// ];
+
 
 // Routes
 router.get('/', getAll);
@@ -28,7 +29,7 @@ router.delete('/:id', (ctx) => {
 });
 
 // Handlers
-function getAll(ctx) {
+async function getAll(ctx) {
     const urlquery = ctx.request.query.q;
     if (urlquery) {
         const filtered = articles.filter(article => article.title.toLowerCase().includes(urlquery.toLowerCase()));
@@ -38,23 +39,27 @@ function getAll(ctx) {
             ctx.body = {message: "Title and fullText are required"};
         }
     } else{
-        ctx.body = articles;
+        const query = "SELECT * FROM articles";
+        const data = await db.run_query(query);
+        ctx.body = data;
     }
 }
 
-function createArticle(ctx) {
+async function createArticle(ctx) {
     const { title, fullText } = ctx.request.body;
     // Simple validation
     if(!title || !fullText) {
-    ctx.status = 400;
-    ctx.body = { message: "Title and fullText are required" };
-    return;
+        ctx.status = 400;
+        ctx.body = { message: "Title and fullText are required" };
+        return;
     }
-    let id = articles.length + 1;
-    const newArticle = { id, title, fullText };
-    articles.push(newArticle);
+    // let id = articles.length + 1;
+    // const newArticle = { id, title, fullText };
+    // articles.push(newArticle);
+    const query = "INSERT INTO articles SET ?";
+    const result = await db.run_query(query, { title, fullText });
     ctx.status = 201; // Created
-    ctx.body = { message: "Created", article: newArticle };
+    ctx.body = { ID: result.insertId, created: true };
 }
 
 function getById(ctx){
