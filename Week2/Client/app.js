@@ -13,7 +13,7 @@ async function fetchPosts() {
         postElement.classList.add('post');
         postElement.innerHTML = `
         <h2>${post.title}</h2>
-        <p>${post.fullText}</p>
+        <p>${post.allText}</p>
         `;
         postsContainer.appendChild(postElement);
     });
@@ -28,7 +28,7 @@ async function submitPost() {
     await fetch('http://localhost:3000/api/v1/articles', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title: title, fullText: body })
+        body: JSON.stringify({ title: title, allText: body })
     });
     // Refresh the list
     fetchPosts();
