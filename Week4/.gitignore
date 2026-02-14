@@ -1,0 +1,29 @@
+# 1. Dependency Directories (Crucial!)
+node_modules/
+jspm_packages/
+
+# 2. Environment Variables (Sensitive Data)
+.env
+.env.test
+.env.production
+
+# 3. Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 4. OS and IDE Files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# 5. Build/Dist folders (if you add Vue build later)
+dist/
+build/
+
+# 6. MySQL/Local DB temp files
+*.sql
+!my_database_backup.sql  # Only if you explicitly want to save a specific backup
