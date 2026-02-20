@@ -1,6 +1,7 @@
 <script setup>
   import { ref, onMounted, computed, watch } from 'vue'
   import ArticleCard from './components/ArticleCard.vue'   
+  import PostCard from './components/PostCard.vue'
   const articles = ref([])     // 2. Create a reactive box to hold the list
   const loading = ref(true)
   const searchQuery = ref('')
@@ -78,6 +79,7 @@
     <br /><br />
     <a-button type="dashed" danger>Dangerous Button</a-button>
   </div>
+  <PostCard />
 </template>
 
 <style scoped>
