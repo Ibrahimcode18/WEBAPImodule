@@ -23,7 +23,7 @@ onMounted(async () => {
     <div v-if="loading">Loading...</div>
 
     <a-row :gutter="[16, 16]" v-else>
-        <a-col :span="8" v-for="article in articles" :key="article.ID">
+        <a-col :span="6" v-for="article in articles" :key="article.ID">
             <PostCard
             :title="article.title"
             :summary="article.summary"
