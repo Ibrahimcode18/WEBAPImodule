@@ -1,93 +1,42 @@
 <script setup>
-  import { ref, onMounted, computed, watch } from 'vue'
-  import ArticleCard from './components/ArticleCard.vue'   
-  import PostCard from './components/PostCard.vue'
-  const articles = ref([])     // 2. Create a reactive box to hold the list
-  const loading = ref(true)
-  const searchQuery = ref('')
-  const totalLikes = ref(0)
-  
-
-  onMounted(async () => {     // 3. Fetch data ONLY when the component mounts
-    try {
-      const response = await fetch('http://localhost:3000/api/v1/articles')
-      const data = await response.json()
-      articles.value = data // Update the reactive variable
-    } catch (error) {
-      console.error('Error fetching articles:', error)
-    } finally{
-      loading.value = false
-    }
-  })
-
-  async function removeArticle(id){
-    try{
-      const response = await fetch(`http://localhost:3000/api/v1/articles/${id}`, {
-        method : 'DELETE',
-      })
-      if (response.ok){
-        console.log(`Article with id ${id} deleted successfully.`)
-        articles.value = articles.value.filter(article => article.id !== id)
-      } else {
-        console.error(`Failed to delete article with id ${id}. Status: ${response.status}`)
-      }
-    } catch (error){
-      console.error("Network issues", error)
-    }
-  }
-
-  
-  watch(searchQuery, async (newValue, oldValue) => {
-    console.log('User is typing...', newValue)
-    const response = await fetch(`http://localhost:3000/api/v1/articles?q=${newValue}`)
-    const data = await response.json()
-    articles.value = data
-  })
-
-  function updateLikes(){
-    totalLikes.value++;
-  }
-
-
+  import { Layout, LayoutHeader, LayoutContent, LayoutFooter } from 'ant-design-vue'
+  import BlogGrid from './components/BlogGrid.vue'
 </script>
-
 <template>
-  <h1>Latest Articles</h1>
-  <p>Total Likes: {{ totalLikes }}</p>
-  <div>
-    <input v-model="searchQuery" placeholder="Search articles (Server side demo)..." />
-  </div>
-  <div v-if="loading">
-    Loading articles... please wait.
-  </div>
-  <div v-else-if="articles.length === 0">
-    <h1>No articles found. Go write some!</h1>
-  </div>
-  <div v-else>
-    <ArticleCard 
-      v-for="article in articles" 
-      :key="article.id" 
-      :data="article" 
-      @delete-article="removeArticle"
-      @updateLikes="updateLikes" 
-    />
- </div>
- <hr />
-  <div style="padding: 50px;">
-    <h1>Design System Test</h1>
-    <a-button type="primary">My First Ant Button</a-button>
-    <br /><br />
-    <a-button type="dashed" danger>Dangerous Button</a-button>
-  </div>
-  <PostCard />
+  <a-layout class="layout">
+    <a-layout-header>
+      <div class="logo">My Blog</div>
+      <div style="color: white; float: right;">Welcome User</div>
+    </a-layout-header>
+
+    <a-layout-content style="padding: 0 50px">
+      <div class="site-layout-content">
+        <h1>Latest Posts</h1>
+        <BlogGrid />
+      </div>
+    </a-layout-content>
+
+    <a-layout-footer style="text-align: center">
+      Web API Development ©2026 Created by You
+    </a-layout-footer>
+  </a-layout>
 </template>
 
 <style scoped>
-  .article-card {
-  border: 1px solid #ccc;
-  padding: 10px;
-  margin: 10px 0;
-  border-radius: 8px;
-  background-color: #f9f9f9;
+  /* Specific overrides for Ant Design components */
+  .site-layout-content {
+  background: #fff;
+  padding: 24px;
+  min-height: 280px;
+  margin-top: 24px;
+  }
+  .logo {
+  float: left;
+  width: 120px;
+  height: 31px;
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+  line-height: 64px; /* Vertically center in header */
   }
 </style>
