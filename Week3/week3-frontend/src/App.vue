@@ -71,6 +71,13 @@
       @updateLikes="updateLikes" 
     />
  </div>
+ <hr />
+  <div style="padding: 50px;">
+    <h1>Design System Test</h1>
+    <a-button type="primary">My First Ant Button</a-button>
+    <br /><br />
+    <a-button type="dashed" danger>Dangerous Button</a-button>
+  </div>
 </template>
 
 <style scoped>
