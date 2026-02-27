@@ -24,6 +24,7 @@ exports.add = async function add (user) {
 
     // 3. Replace the plain password with the hash in the object
     user.password = hash;
+    user.role = 'user'; // Default role
 
     // 4. Save to DB
     const data = await db.run_query(query, user);

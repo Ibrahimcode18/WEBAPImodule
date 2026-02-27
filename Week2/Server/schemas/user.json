@@ -7,6 +7,7 @@
                 "username": { "type": "string", "minLength": 3 },
                 "email": { "type": "string", "format": "email" },
                 "password": { "type": "string", "minLength": 6 },
+                "role": { "type": "string", "enum": ["user", "admin"] },
                 "firstName": { "type": "string" },
                 "lastName": { "type": "string" },
                 "about": { "type": "string" },
