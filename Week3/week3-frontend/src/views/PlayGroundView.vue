@@ -1,5 +1,6 @@
 <script setup>
     import { ref, computed, watch } from 'vue'
+    import VotingButton from '../components/VotingButton.vue'
     const rawText = ref('')
     // Computed properties automatically update when 'rawText' changes
     const characterCount = computed(() => {
@@ -28,6 +29,18 @@
             console.log('Sending to API:', newValue) // Simulate API call
         }, 1000)    
     })
+
+    const totalScore = ref(0)
+    // These functions handle the shouts from the child
+    function addScore(amount) {
+        totalScore.value += amount
+    }
+    function subScore(amount) {
+        totalScore.value -= amount
+    }
+
+    const isCompleted = ref(false)
+    const hasError = ref(false)
 </script>
 <template>
     <div style="padding: 50px; max-width: 600px;">
@@ -59,4 +72,50 @@
         style="width: 300px; padding: 8px;"
         />
     </div>
+    <hr>
+    <div style="padding: 50px;">
+        <h2>Parent Component</h2>
+        <h1>Total Score: {{ totalScore }}</h1>
+
+        <VotingButton @upvote="addScore" @downvote="subScore" />
+    </div>
+    <hr>
+    <div style="padding: 50px;">
+        <h2>Task Status Box</h2>
+        <label>
+            <input type="checkbox" v-model="isCompleted"> Mark Complete
+        </label>
+        <br>
+        <label>
+            <input type="checkbox" v-model="hasError"> Simulate Error
+        </label>
+        <div class="task-box"
+            :class="{ 'success': isCompleted, 'danger': hasError }"
+            >
+            <p v-if="hasError">Error connecting to server!</p>
+            <p v-else-if="isCompleted">Task finished successfully.</p>
+            <p v-else>Task is pending...</p>
+        </div>
+    </div>
 </template>
+
+<style scoped>
+.task-box {
+ margin-top: 20px;
+ padding: 20px;
+ border: 2px solid #ccc;
+ background: #f9f9f9;
+ transition: all 0.3s ease;
+}
+/* These classes are applied dynamically */
+.success {
+ border-color: #52c41a;
+ background: #f6ffed;
+ color: #52c41a;
+}
+.danger {
+ border-color: #ff4d4f;
+ background: #fff2f0;
+ color: #ff4d4f;
+}
+</style>
