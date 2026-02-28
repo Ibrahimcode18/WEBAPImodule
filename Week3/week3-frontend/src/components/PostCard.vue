@@ -26,7 +26,7 @@ import { ref } from 'vue'
                 <like-filled v-if="liked" key="like" />
                 <like-outlined v-else key="liked" />
             </div>
-            
+
             <message-outlined key="message" />
         </template>
         <a-card-meta :title="title">

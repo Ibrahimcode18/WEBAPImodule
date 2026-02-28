@@ -25,9 +25,9 @@ onMounted(async () => {
     <a-row :gutter="[16, 16]" v-else>
         <a-col :span="6" v-for="article in articles" :key="article.ID">
             <PostCard
-            :title="article.title"
-            :summary="article.summary"
-            :imageURL="article.imageURL"
+                :title="article.title"
+                :summary="article.summary"
+                :imageURL="article.imageURL"
             />
         </a-col>
     </a-row>

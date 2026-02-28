@@ -1,6 +1,7 @@
 <script setup>
   import { Layout, LayoutHeader, LayoutContent, LayoutFooter } from 'ant-design-vue'
   import BlogGrid from './components/BlogGrid.vue'
+  import PlayGroundView from './views/PlayGroundView.vue';
 </script>
 <template>
   <a-layout class="layout">
@@ -12,7 +13,7 @@
     <a-layout-content style="padding: 0 50px">
       <div class="site-layout-content">
         <h1>Latest Posts</h1>
-        <BlogGrid />
+        <PlayGroundView />
       </div>
     </a-layout-content>
 
