@@ -1,6 +1,9 @@
 <script setup>
     import { ref, computed, watch } from 'vue'
     import VotingButton from '../components/VotingButton.vue'
+    import ModalShell from '../components/ModalShell.vue'
+    import SmartList from '../components/SmartList.vue'
+
     const rawText = ref('')
     // Computed properties automatically update when 'rawText' changes
     const characterCount = computed(() => {
@@ -41,6 +44,8 @@
 
     const isCompleted = ref(false)
     const hasError = ref(false)
+
+    const showLoginModal = ref(false)
 </script>
 <template>
     <div style="padding: 50px; max-width: 600px;">
@@ -96,6 +101,57 @@
             <p v-else-if="isCompleted">Task finished successfully.</p>
             <p v-else>Task is pending...</p>
         </div>
+    </div>
+    <hr>
+    <hr>
+
+    <div style="padding: 50px;">
+        <h2>Slot Testing Ground</h2>
+
+        <button @click="showLoginModal = true">Open Custom Modal</button>
+        <ModalShell :isOpen="showLoginModal" @close="showLoginModal = false">
+
+            <template #header>
+                <h3 style="color: blue; margin: 0;">Sign In to Your Account</h3>
+            </template>
+
+            <template #main>
+                <p>Please enter your credentials below:</p>
+                <input type="text" placeholder="Username" style="display: block; margin-bottom: 10px;
+                width: 100%;" />
+                <input type="password" placeholder="Password" style="width: 100%;" />
+            </template>
+
+            <template #footer>
+                <button style="background: green; color: white; margin-right: 10px;">Login</button>
+                <button @click="showLoginModal = false">Cancel</button>
+            </template>
+        </ModalShell>
+    </div>
+    <hr>
+    <hr>
+
+    <div style="padding: 50px; max-width: 500px;">
+        <h2>Scoped Slots Practice</h2>
+
+        <p>Instance 1: Default Fallback</p>
+        <SmartList />
+        <br /><br />
+        <p>Instance 2: Parent takes control of the item layout</p>
+        <SmartList>
+            <template #default="{ person }">
+                <div style="background: #f0f2f5; padding: 10px; border-radius: 4px;">
+                    <strong style="color: #1890ff;">{{ person.name }}</strong>
+
+                    <span
+                    style="float: right; padding: 2px 6px; border-radius: 4px; font-size: 0.8em;"
+                    :style="{ background: person.status === 'Banned' ? 'red' : 'lightgreen' }"
+                    >
+                    {{ person.status }}
+                    </span>
+                </div>
+            </template>
+        </SmartList>
     </div>
 </template>
 
