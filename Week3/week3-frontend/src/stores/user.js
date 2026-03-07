@@ -9,6 +9,10 @@ export const useUserStore = defineStore('user', () => {
         ID: 0,
         email: ''
     })
+    const storedUser = localStorage.getItem('user')
+    if (storedUser) {
+        user.value = JSON.parse(storedUser)
+    }
     // 2. ACTIONS: Functions to change the data
     function login(userData) {
         user.value = {
@@ -17,6 +21,7 @@ export const useUserStore = defineStore('user', () => {
             ID: userData.ID,
             email: userData.email
         }
+        localStorage.setItem('user', JSON.stringify(user.value))
     }
     function logout() {
         user.value = {
@@ -25,6 +30,7 @@ export const useUserStore = defineStore('user', () => {
             ID: 0,
             email: ''
         }
+        localStorage.removeItem('user')
     }
     return { user, login, logout }
 })
