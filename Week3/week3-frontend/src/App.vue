@@ -46,7 +46,7 @@
         <template v-else>
           <a-menu-item key="4">Hello, {{ userStore.user.username }}</a-menu-item>
           <a-menu-item key="5"><RouterLink to="/profile">Profile</RouterLink></a-menu-item>
-          <a-menu-item key="6" @click="userStore.logout">Logout</a-menu-item>
+          <a-menu-item key="6"><RouterLink to="/login" @click="userStore.logout">Logout</RouterLink></a-menu-item>
         </template>
       </a-menu>
     </a-layout-header>

@@ -27,7 +27,7 @@ router.beforeEach((to, from, next) => {
             path: '/login',
             query: { redirect: to.fullPath } // Save their intended destination!
         });
-    } else {
+    }else {
         next(); // Otherwise, let them through normally
     }
 });

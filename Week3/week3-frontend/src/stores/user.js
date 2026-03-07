@@ -32,5 +32,14 @@ export const useUserStore = defineStore('user', () => {
         }
         localStorage.removeItem('user')
     }
-    return { user, login, logout }
+    function updateProfile(newDetails) {
+        // Update the RAM
+        user.value.username = newDetails.username;
+        user.value.email = newDetails.email;
+
+        // Immediately backup to the Hard Drive (LocalStorage)
+        localStorage.setItem('user', JSON.stringify(user.value));
+    }
+
+    return { user, login, logout, updateProfile }
 })
