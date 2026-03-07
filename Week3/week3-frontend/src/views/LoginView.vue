@@ -28,7 +28,9 @@
                 userStore.login(data);
 
                 alert('Welcome back ' + data.username);
-                router.push('/');
+                // Check the URL for a redirect tag, otherwise default to '/'
+                const redirectPath = router.currentRoute.value.query.redirect || '/';
+                router.push(redirectPath);
             } else {
                 alert('Login failed');
             }
