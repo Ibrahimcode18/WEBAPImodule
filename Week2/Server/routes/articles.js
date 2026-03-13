@@ -1,19 +1,16 @@
 const Router = require('koa-router');
 const bodyParser = require('koa-bodyparser');
 const db = require('../helpers/database'); 
+const auth = require('../controllers/auth');
+
 // Prefix means all routes here start with /api/v1/articles
 const router = new Router({ prefix: '/api/v1/articles' });
-// let articles = [
-//     { id: 1,title: 'Hello World', fullText: 'This is my first article from Koa!' },
-//     { id: 2, title: 'Vue is cool', fullText: 'We will learn Vue next week.' },
-//     { id: 3, title: 'Refactored', fullText: 'We moved this to a separate file.' }
-// ];
-
 
 // Routes
 router.get('/', getAll);
-router.get('/:id', getById)
-router.post('/', bodyParser(), createArticle); // We will build this next
+router.get('/:id', getById);
+router.post('/', auth, bodyParser(), createArticle); // We will build this next
+router.put('/:id', auth, bodyParser(), updateArticle);
 router.delete('/:id', (ctx) => {
     const id = parseInt(ctx.params.id);
     const index = articles.findIndex(a => a.id === id);
@@ -62,10 +59,7 @@ async function createArticle(ctx) {
         ctx.body = { message: "Title and fullText are required" };
         return;
     }
-    // let id = articles.length + 1;
-    // const newArticle = { id, title, fullText };
-    // articles.push(newArticle);
-    // Change your query and your data array like this:
+   
     const query = "INSERT INTO articles (title, allText) VALUES (?, ?)";
     const result = await db.run_query(query, [title, allText]);
     ctx.status = 201; // Created
@@ -84,4 +78,32 @@ async function getById(ctx){
     }
 }
 
+async function updateArticle(ctx) {
+    const id = ctx.params.id;
+    let result = await articles.getById(id); // Fetch the existing article
+    if (result.length) {
+        let article = result[0];
+
+        // CHECK PERMISSION
+        // ctx.state.user contains the logged-in user (thanks to Passport)
+        const permission = can.update(ctx.state.user, article);
+
+        if (!permission.granted) {
+            ctx.status = 403; // Forbidden
+            ctx.body = { error: "You do not own this article" };
+        } else {
+            // PROCEED
+            const body = ctx.request.body;
+            // ... existing update logic ...
+            // IMPORTANT: Don't let them change the authorID!
+            const { ID, authorID, ...updateData } = body;
+            Object.assign(article, updateData);
+
+            const updateResult = await articles.update(article);
+            if (updateResult.affectedRows) {
+                ctx.body = { ID: id, updated: true, link: ctx.request.path };
+            }
+        }
+    }
+}
 module.exports = router;
