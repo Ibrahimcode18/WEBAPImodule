@@ -2,6 +2,8 @@ const Router = require('koa-router');
 const bodyParser = require('koa-bodyparser');
 const db = require('../helpers/database'); 
 const auth = require('../controllers/auth');
+const can = require('../permissions/articles');
+// The articles model has not been created here, the communication is done directly with the database for simplicity. In a real app, you would want to have a model layer to abstract the database operations.
 
 // Prefix means all routes here start with /api/v1/articles
 const router = new Router({ prefix: '/api/v1/articles' });
@@ -99,7 +101,7 @@ async function updateArticle(ctx) {
             const { ID, authorID, ...updateData } = body;
             Object.assign(article, updateData);
 
-            const updateResult = await articles.update(article);
+            const updateResult = await articles.update(article); // This should handle the actual DB update
             if (updateResult.affectedRows) {
                 ctx.body = { ID: id, updated: true, link: ctx.request.path };
             }
